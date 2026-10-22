@@ -48,11 +48,11 @@ Without these env vars, the form UI still works but `/api/register` returns **50
 |-------|---------|
 | `/` | Hero + what’s next |
 | `/register` | Alum mailing-list form |
-| `/committee` | Organizers |
+| `/people` | Committee placeholders and registered classmates |
 | `/faq` | Accordion FAQs |
 | `/api/register` | Appends a row to Google Sheets |
 
 ## Editing content
 
-- Committee names/roles: `src/data/committee.ts`
+- Committee placeholders and the help email: `src/data/committee.ts`
 - FAQs: `src/data/faqs.ts`

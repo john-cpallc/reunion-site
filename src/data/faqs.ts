@@ -1,3 +1,5 @@
+import { helpEmail } from "@/data/committee";
+
 export type FaqItem = {
   question: string;
   answer: string;
@@ -22,7 +24,7 @@ export const faqs: FaqItem[] = [
   {
     question: "How do I update my contact info?",
     answer:
-      "Submit the registration form again with your current details, or reach out through the committee once a shared class email is live.",
+      "Submit the registration form again with your current details.",
   },
   {
     question: "Is this affiliated with Huntsville City Schools or HHS?",
@@ -30,8 +32,7 @@ export const faqs: FaqItem[] = [
       "No — this is an independent alumni effort. For official school information, visit the Huntsville High School website.",
   },
   {
-    question: "How can I help on the committee?",
-    answer:
-      "We'd love more hands. Join the list and note that you want to help, or reach out to anyone already on the committee.",
+    question: "How can I help?",
+    answer: `The committee isn't adding members. If you want to help, email ${helpEmail}.`,
   },
 ];

@@ -20,8 +20,9 @@ export default function RegisterPage() {
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-muted">
             Register yourself as a Class of 2017 alum so we can reach you with
-            surveys, save-the-date, and ticket updates. Your info stays with the
-            planning committee — we are not publishing a public directory.
+            surveys, save-the-date, and ticket updates. Your contact details
+            stay with the committee. Your name is added to the running list on
+            the People page.
           </p>
         </div>
         <RegisterForm />

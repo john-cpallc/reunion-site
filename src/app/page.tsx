@@ -38,10 +38,10 @@ export default function Home() {
               Join the list
             </Link>
             <Link
-              href="/committee"
+              href="/people"
               className="rounded-sm border border-white/35 px-6 py-3 font-display text-lg tracking-wide text-white uppercase transition hover:border-white hover:bg-white/10"
             >
-              Meet the committee
+              People
             </Link>
           </div>
         </div>
