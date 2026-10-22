@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --cardinal: #b01030;
+  --cardinal-deep: #7a0b21;
+  --cardinal-bright: #d4213d;
+  --blue: #1a3a6b;
+  --blue-soft: #2a5298;
+  --ink: #141820;
+  --paper: #f7f5f2;
+  --paper-warm: #efeae3;
+  --muted: #5c6470;
+  --line: rgba(20, 24, 32, 0.12);
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cardinal: var(--cardinal);
+  --color-cardinal-deep: var(--cardinal-deep);
+  --color-cardinal-bright: var(--cardinal-bright);
+  --color-blue: var(--blue);
+  --color-blue-soft: var(--blue-soft);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper-warm: var(--paper-warm);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --font-display: var(--font-barlow), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-source), "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-source), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--cardinal) 28%, white);
+  color: var(--ink);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--cardinal) 35%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-rise-delay {
+  animation: rise-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.animate-rise-delay-2 {
+  animation: rise-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.animate-fade {
+  animation: fade-in 1s ease both;
+}
+
+.cta-glow:hover {
+  animation: pulse-glow 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-rise-delay,
+  .animate-rise-delay-2,
+  .animate-fade,
+  .cta-glow:hover {
+    animation: none;
+  }
+}
