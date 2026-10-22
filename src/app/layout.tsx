@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · Go Big Red 2027",
   },
   description:
-    "Huntsville High School Class of 2017 reunion hub — join the mailing list, meet the committee, and get FAQs for our 10-year reunion.",
+    "Huntsville High School Class of 2017 reunion hub — join the mailing list, see who's involved, and get FAQs for our 10-year reunion.",
   metadataBase: new URL("https://gobigred2027.com"),
   openGraph: {
     title: "Go Big Red 2027 · HHS Class of 2017",

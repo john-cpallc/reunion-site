@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { connection } from "next/server";
 import type { RegisterInput } from "@/lib/register-schema";
 
 function getAuth() {
@@ -54,4 +55,52 @@ export function isSheetsConfigured() {
       process.env.GOOGLE_PRIVATE_KEY &&
       process.env.GOOGLE_SHEET_ID,
   );
+}
+
+export type PublicClassmate = {
+  name: string;
+};
+
+function cell(row: string[], index: number) {
+  return (row[index] ?? "").trim();
+}
+
+function classmateName(first: string, last: string, preferred: string) {
+  if (preferred && last) return `${preferred} ${last}`;
+  if (preferred) return preferred;
+  return [first, last].filter(Boolean).join(" ");
+}
+
+/** Names only, in the order people first joined. Emails and phones stay on the sheet. */
+export async function listClassmates(): Promise<PublicClassmate[]> {
+  await connection();
+  if (!isSheetsConfigured()) return [];
+
+  const { auth, sheetId } = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: sheetId,
+    range: "emails!A:D",
+  });
+
+  const rows = response.data.values ?? [];
+  const seen = new Map<string, string>();
+  const order: string[] = [];
+
+  for (const row of rows) {
+    const first = cell(row, 1);
+    const last = cell(row, 2);
+    const preferred = cell(row, 3);
+
+    if (/^first$/i.test(first) && /^last$/i.test(last)) continue;
+
+    const name = classmateName(first, last, preferred);
+    if (!name) continue;
+
+    const key = `${first} ${last}`.trim().toLowerCase() || name.toLowerCase();
+    if (!seen.has(key)) order.push(key);
+    seen.set(key, name);
+  }
+
+  return order.map((key) => ({ name: seen.get(key) ?? key }));
 }

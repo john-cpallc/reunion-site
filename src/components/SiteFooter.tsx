@@ -14,6 +14,9 @@ export function SiteFooter() {
           </p>
         </div>
         <div className="flex flex-col gap-2 text-sm sm:items-end">
+          <Link href="/people" className="transition hover:text-white">
+            People
+          </Link>
           <Link href="/register" className="text-white transition hover:text-cardinal-bright">
             Join the mailing list
           </Link>
