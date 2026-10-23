@@ -1,5 +1,4 @@
 import { google } from "googleapis";
-import { connection } from "next/server";
 import type { RegisterInput } from "@/lib/register-schema";
 
 function readEnv(name: string) {
@@ -101,7 +100,6 @@ function classmateName(first: string, last: string, preferred: string) {
 
 /** Names only, in the order people first joined. Emails and phones stay on the sheet. */
 export async function listClassmates(): Promise<PublicClassmate[]> {
-  await connection();
   const missing = missingSheetsEnv();
   if (missing.length > 0) {
     throw new Error(`Missing Google Sheets config: ${missing.join(", ")}`);
