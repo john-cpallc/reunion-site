@@ -1,3 +1,4 @@
+import { createPrivateKey } from "node:crypto";
 import { google } from "googleapis";
 import type { RegisterInput } from "@/lib/register-schema";
 
@@ -14,7 +15,42 @@ function readEnv(name: string) {
 
 /** Vercel often stores the PEM with surrounding quotes or literal \n sequences. */
 function readPrivateKey() {
-  return readEnv("GOOGLE_PRIVATE_KEY").replace(/\\n/g, "\n");
+  let key = readEnv("GOOGLE_PRIVATE_KEY");
+  for (let pass = 0; pass < 2; pass += 1) {
+    if (
+      (key.startsWith('"') && key.endsWith('"')) ||
+      (key.startsWith("'") && key.endsWith("'"))
+    ) {
+      key = key.slice(1, -1).trim();
+    }
+    if (!key.includes("\\n")) break;
+    key = key.replace(/\\n/g, "\n");
+  }
+  return key.replace(/\r/g, "");
+}
+
+export function sheetsFailureReason(error: unknown) {
+  const raw = error instanceof Error ? error.message : "The sheet request failed.";
+  const key = readPrivateKey();
+
+  if (raw.startsWith("Missing Google Sheets config")) {
+    return `The server is missing ${raw.split(": ").slice(1).join(": ")}.`;
+  }
+  if (key && !key.includes("END PRIVATE KEY")) {
+    return "The private key saved in Vercel is incomplete. Paste the whole key as one line, with \\n where each line break was.";
+  }
+  if (/DECODER|unsupported|invalid_grant|Invalid JWT|ERR_OSSL|private key/i.test(raw)) {
+    return "Google could not read the private key. Save it in Vercel as one line, with \\n between the PEM lines.";
+  }
+  if (/permission|forbidden|403/i.test(raw)) {
+    return "The spreadsheet is not shared with the service account email as an editor.";
+  }
+  if (/not found|404/i.test(raw)) {
+    return "GOOGLE_SHEET_ID does not match a spreadsheet this service account can open.";
+  }
+
+  const line = raw.split("\n")[0]?.replace(/-----BEGIN[\s\S]*$/, "[key]") ?? raw;
+  return line.slice(0, 240);
 }
 
 function readSheetId() {
@@ -31,6 +67,16 @@ function getAuth() {
   if (!email || !privateKey || !sheetId) {
     throw new Error(
       `Missing Google Sheets config: ${missingSheetsEnv().join(", ")}`,
+    );
+  }
+
+  try {
+    createPrivateKey(privateKey);
+  } catch {
+    throw new Error(
+      privateKey.includes("END PRIVATE KEY")
+        ? "Invalid private key"
+        : "Private key is incomplete",
     );
   }
 
