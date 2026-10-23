@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { listClassmates } from "@/lib/sheets";
 
 export async function ClassmateList() {
@@ -8,6 +9,7 @@ export async function ClassmateList() {
   try {
     names = (await listClassmates()).map((classmate) => classmate.name);
   } catch (error) {
+    unstable_rethrow(error);
     console.error("Failed to load classmate list:", error);
     unavailable = true;
   }
