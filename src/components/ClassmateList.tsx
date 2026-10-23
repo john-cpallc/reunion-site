@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
-import { listClassmates } from "@/lib/sheets";
+import { listClassmates, sheetsFailureReason } from "@/lib/sheets";
 
 export async function ClassmateList() {
   // Must stay outside the try. During prerender, connection() rejects so
@@ -10,20 +10,18 @@ export async function ClassmateList() {
   await connection();
 
   let names: string[] = [];
-  let unavailable = false;
+  let failure: string | null = null;
 
   try {
     names = (await listClassmates()).map((classmate) => classmate.name);
   } catch (error) {
     unstable_rethrow(error);
     console.error("Failed to load classmate list:", error);
-    unavailable = true;
+    failure = sheetsFailureReason(error);
   }
 
-  if (unavailable) {
-    return (
-      <p className="mt-6 text-muted">The class list is unavailable right now.</p>
-    );
+  if (failure) {
+    return <p className="mt-6 text-muted">{failure}</p>;
   }
 
   if (names.length === 0) {
