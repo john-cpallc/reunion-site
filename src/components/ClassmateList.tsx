@@ -1,13 +1,21 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
+import { connection } from "next/server";
 import { listClassmates } from "@/lib/sheets";
 
 export async function ClassmateList() {
+  // Must stay outside the try. During prerender, connection() rejects so
+  // React can postpone this subtree. Catching that rejection renders the
+  // "unavailable" state into the static shell.
+  await connection();
+
   let names: string[] = [];
   let unavailable = false;
 
   try {
     names = (await listClassmates()).map((classmate) => classmate.name);
   } catch (error) {
+    unstable_rethrow(error);
     console.error("Failed to load classmate list:", error);
     unavailable = true;
   }
